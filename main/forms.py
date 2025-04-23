@@ -7,7 +7,7 @@ class CarSearchForm(forms.Form):
         label='Заводской номер машины',
         max_length=20,
         required=True,
-        widget=forms.TextInput(),
+        widget=forms.TextInput(attrs={'size':'100'}),
     )
    
    
