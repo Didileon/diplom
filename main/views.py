@@ -27,17 +27,20 @@ class CarListView(FormMixin, ListView):
     success_url = 'index'
 
       
-    def get_queryset(self):
-        user = self.request.user
-        queryset = super().get_queryset().filter(user=user)  # фильтрация по текущему пользователю
-        self.filterset = CarFilter(self.request.GET, queryset)
-        return self.filterset.qs
+    # def get_queryset(self):
+    #     return []
+      
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     queryset = super().get_queryset().filter(user=user)  # фильтрация по текущему пользователю
+    #     self.filterset = CarFilter(self.request.GET, queryset)
+    #     return self.filterset.qs
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Добавляем в контекст объект фильтрации.
-        context['filterset'] = self.filterset
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     # Добавляем в контекст объект фильтрации.
+    #     context['filterset'] = self.filterset
+    #     return context
     
        
 
@@ -52,16 +55,15 @@ class CarListView(FormMixin, ListView):
     #     return self.render_to_response(self.get_context_data(object_list=self.object_list, form=form))
 
 
-    def post(self, request, *args, **kwargs):
-        self.object_list = self.get_queryset()
-        form = self.get_form()
-        if form.is_valid():
-            self.object_list = self.object_list.filter(vin__startswith=form.cleaned_data['vin'])
-        else:
-            self.object_list = []
+    # def post(self, request, *args, **kwargs):
+    #     self.object_list = self.get_queryset()
+    #     form = self.get_form()
+    #     if form.is_valid():
+    #         self.object_list = self.object_list.filter(vin__startswith=form.cleaned_data['vin'])
+    #     else:
+    #         self.object_list = []
 
-        return self.render_to_response(self.get_context_data(object_list=self.object_list, form=form))
-    
+    #     return self.render_to_response(self.get_context_data(object_list=self.object_list, form=form))
 
 @login_required
 def user_index(request):
