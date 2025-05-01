@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block content %}
+    <div class="col-12 col-md-12 mt-3">
+        <div class="card-new p-4">
+            <div class="d-flex justify-content-around">
+                <a href="/user_index" class="pt-0 h3 text-uppercase nav-link {% if request.path|slice:":11" == '/user_index' %}font-weight-bold text-info{% else %}text-dark{% endif %}">машины</a>
+                <a href="/maintenance" class="pt-0 h3 text-uppercase nav-link {% if request.path|slice:":12" == '/maintenance' %}font-weight-bold text-info{% else %}text-dark{% endif %}">то</a>
+                <a href="/complaints" class="pt-0 h3 text-uppercase nav-link {% if request.path|slice:":12" == '/complaints' %}font-weight-bold text-info{% else %}text-dark{% endif %}">рекламации</a>
+            </div>
+
+            
+            <h4 class="text-center my-3">Информация о проведенных ТО вашей техники</h4>
+            
+            <table class="table table-hover"><br>
+
+                <thead>
+                    <tr>
+                        <th>Заводской номер машины</th>
+                        <th>Сервисная организация</th>
+                        <th>Вид ТО<br><br>
+                        Дата проведения ТО</th>
+                        <th>Наработка мото/часов</th>
+                        <th>Номер заказ-наряда<br><br>
+                        Дата заказ-наряда</th>
+                        <th>Подробнее</th>
+                    </tr>
+                </thead>
+                <tbody>
+                
+                {% for maintenance in maintenance_list %}
+                    <tr>
+                        <td>{{ maintenance.car.vin }}</td>
+                        <td>{{ maintenance.service_company.name }}</td>
+                        <td>{{ maintenance.maintenance_type.name }}<br>
+                            {{ maintenance.maintenance_date|date:"d.m.Y" }}</td>
+                        <td>{{ maintenance.operating_time }}</td>
+                        <td>{{ maintenance.order }}<br>
+                            {{ maintenance.order_date|date:"d.m.Y" }}</td>
+                        <td><a href="/maintenance/{{ maintenance.pk }}" class="btn btn-info">Подробнее</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+            <div class="text-center">
+                <a class="btn btn-primary" href="/maintenance/new">Добавить запись о ТО</a>
+                {% if request.user|has_group:"manager" or request.user|has_group:"admin" %}
+                    <a class="btn btn-primary" href="/lookups" role="button">Редактор справочников</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

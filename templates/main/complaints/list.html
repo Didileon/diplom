@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block content %}
+    <h4 class="text-center mt-4"></h4>
+    <div class="col-12 col-md-12 mt-3">
+        <div class="card-new p-4">
+            <div class="d-flex justify-content-around">
+                <a href="/user_index" class="pt-0 h3 text-uppercase nav-link {% if request.path|slice:":11" == '/user_index' %}font-weight-bold text-info{% else %}text-dark{% endif %}">машины</a>
+                <a href="/maintenance" class="pt-0 h3 text-uppercase nav-link {% if request.path|slice:":12" == '/maintenance' %}font-weight-bold text-info{% else %}text-dark{% endif %}">то</a>
+                <a href="/complaints" class="pt-0 h3 text-uppercase nav-link {% if request.path|slice:":12" == '/complaints' %}font-weight-bold text-info{% else %}text-dark{% endif %}">рекламации</a>
+            </div>
+            <h4 class="text-center my-3">Информация о рекламациях вашей техники:</h4><br><br>
+           
+            <table class="table table-hover">
+
+                <thead>
+                    <tr>
+                        <th>Заводской номер машины<br><br>
+                        Сервисная организация</th>
+                        <th>Дата отказа<br><br>
+                        Наработка м/час</th>
+                        <th>Узел отказа<br><br>
+                        Характер отказа</th>
+                        <th>Способ восстановления<br><br>
+                        Используемые запчасти</th>
+                        <th>Дата восстановления<br><br>
+                        Время простоя техники</th>
+                        <th>Подробнее</th>
+                    </tr>
+                </thead>
+                <tbody>
+                
+                {% for complaint in complaints %}
+                    <tr>
+                        <td>{{ complaint.car.vin|truncatechars:9 }}<br><br>
+                            {{ complaint.service_company.name }}</td>
+                        <td>{{ complaint.date_of_refusal|date:"d.m.Y" }}<br><br>
+                            {{ complaint.operating_time }}</td>
+                        <td>{{ complaint.failure_node|truncatechars:7 }}<br><br>
+                            {{ complaint.denial_type|truncatechars:7 }}</td>
+                        <td>{{ complaint.recovery_method|truncatechars:7 }}<br><br>
+                            {{ complaint.used_details|truncatechars:7 }}</td>
+                        <td>{{ complaint.date_of_restoration|date:"d.m.Y" }}<br><br>
+                            {{ complaint.equipment_downtime }}</td>
+                        <td><a href="/complaints/{{ complaint.pk }}" class="btn btn-info">Подробнее</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-center">
+                {% if request.user|has_group:"service" or request.user|has_group:"manager" or request.user|has_group:"admin" %}
+                    <a class="btn btn-primary" href="/complaints/new">Добавить новую запись о рекламации</a>
+                {% endif %}
+                {% if request.user|has_group:"manager" or request.user|has_group:"admin" %}
+                    <a class="btn btn-primary" href="/lookups" role="button">Редактор справочников</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
